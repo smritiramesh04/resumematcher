@@ -1,1 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Resume Matcher Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #1f1c2c, #928dab);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .card {
+            width: 950px;
+            padding: 40px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            border: none;
+            resize: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            background: white;
+            color: #1f1c2c;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+        }
+
+        .result {
+            margin-top: 30px;
+        }
+
+        .progress {
+            height: 20px;
+            border-radius: 20px;
+            background: rgba(255,255,255,0.3);
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .fill {
+            height: 100%;
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+
+        .low { background: #ff4d4d; }
+        .medium { background: #ffc107; }
+        .high { background: #00ff99; }
+
+        .section {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 15px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            border-bottom: 1px solid white;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+
+<body>
+<div class="card">
+
+    <h1>🚀 AI Resume Matcher Pro</h1>
+
+    <form method="POST">
+        <label>Paste Resume 1</label>
+        <textarea name="resume" rows="4" required></textarea>
+
+        <label>Paste Resume 2</label>
+        <textarea name="resume" rows="4"></textarea>
+
+        <label>Paste Resume 3</label>
+        <textarea name="resume" rows="4"></textarea>
+
+        <label>Paste Job Description</label>
+        <textarea name="job" rows="4" required></textarea>
+
+        <button type="submit">Analyze</button>
+    </form>
+
+    {% if score is not none %}
+    <div class="result">
+
+        <h2>Top Match Score: {{ score }}%</h2>
+
+        <div class="progress">
+            <div id="progressFill" 
+                 class="fill {% if score < 40 %}low{% elif score < 70 %}medium{% else %}high{% endif %}">
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📌 Score Explanation</h3>
+            <p>{{ explanation }}</p>
+        </div>
+
+        <div class="section">
+            <h3>🔑 Top Job Keywords</h3>
+            <ul>
+                {% for word in keywords %}
+                <li>{{ word }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>🏆 Resume Rankings</h3>
+            <table>
+                <tr>
+                    <th>Resume</th>
+                    <th>Match %</th>
+                </tr>
+                {% for name, percent in rankings %}
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>{{ percent }}%</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+    </div>
+
+    {% if score is not none %}
+<div id="scoreValue" data-score="{{ score }}"></div>
+
+<script>
+    const scoreElement = document.getElementById("scoreValue");
+
+    if (scoreElement) {
+        const value = scoreElement.getAttribute("data-score");
+        document.getElementById("progressFill").style.width = value + "%";
+    }
+</script>
+{% endif %}
+
+    {% endif %}
+
+    <footer>
+        Powered by TF-IDF & Cosine Similarity | Built with Flask
+    </footer>
+
+</div>
+</body>
+</html>
